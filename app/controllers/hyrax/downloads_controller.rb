@@ -3,6 +3,7 @@ module Hyrax
   class DownloadsController < ApplicationController
     include Hydra::Controller::DownloadBehavior
     include Hyrax::LocalFileDownloadsControllerBehavior
+    include Hyrax::ValkyrieDownloadsControllerBehavior
 
     def self.default_content_path
       :original_file
@@ -11,6 +12,8 @@ module Hyrax
     # Render the 404 page if the file doesn't exist.
     # Otherwise renders the file.
     def show
+      return show_valkyrie if Hyrax.config.use_valkyrie?
+
       case file
       when ActiveFedora::File
         # For original files that are stored in fedora
